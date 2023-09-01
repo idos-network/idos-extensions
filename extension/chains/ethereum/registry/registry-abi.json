@@ -1,0 +1,133 @@
+[
+			{
+				"inputs": [],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_grantee",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "_dataId",
+						"type": "string"
+					}
+				],
+				"name": "delete_grant",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "grants",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "grantee",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "dataId",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "lockedUntil",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_grantee",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "_dataId",
+						"type": "string"
+					}
+				],
+				"name": "grants_for",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "owner",
+								"type": "address"
+							},
+							{
+								"internalType": "address",
+								"name": "grantee",
+								"type": "address"
+							},
+							{
+								"internalType": "string",
+								"name": "dataId",
+								"type": "string"
+							},
+							{
+								"internalType": "uint256",
+								"name": "lockedUntil",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct FractalRegistry.Grant[]",
+						"name": "",
+						"type": "tuple[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_grantee",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "_dataId",
+						"type": "string"
+					}
+				],
+				"name": "insert_grant",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		]
