@@ -1,12 +1,10 @@
-version: "3"
-
+version: '3'
 services:
-  fractal-registry:
-    container_name: fractal-registry
-    image: fractal-registry:latest
+  idos-extension:
+    image: kwildb/idos-extension:latest
     ports:
-      - "50051:50051"
-    env_file:
-      - .env
+      - 50051:50051
     environment:
-      - RPC_URL=${RPC_URL:-http://localhost:8545}
+      - ETH_RPC_URL=
+      - NEAR_RPC_URL=
+    restart: on-failure
