@@ -29,8 +29,8 @@ var (
 	_ = abi.ConvertType
 )
 
-// FractalRegistryGrant is an auto generated low-level Go binding around an user-defined struct.
-type FractalRegistryGrant struct {
+// AccessGrantsGrant is an auto generated low-level Go binding around an user-defined struct.
+type AccessGrantsGrant struct {
 	Owner       common.Address
 	Grantee     common.Address
 	DataId      string
@@ -39,7 +39,7 @@ type FractalRegistryGrant struct {
 
 // RegistryMetaData contains all meta data concerning the Registry contract.
 var RegistryMetaData = &bind.MetaData{
-	ABI: "[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_grantee\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"_dataId\",\"type\":\"string\"}],\"name\":\"delete_grant\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"grants\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"grantee\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"dataId\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"lockedUntil\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_grantee\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"_dataId\",\"type\":\"string\"}],\"name\":\"grants_for\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"grantee\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"dataId\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"lockedUntil\",\"type\":\"uint256\"}],\"internalType\":\"structFractalRegistry.Grant[]\",\"name\":\"\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_grantee\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"_dataId\",\"type\":\"string\"}],\"name\":\"insert_grant\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
+	ABI: "[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"grantee\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"dataId\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"lockedUntil\",\"type\":\"uint256\"}],\"name\":\"deleteGrant\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"grantee\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"dataId\",\"type\":\"string\"}],\"name\":\"findGrants\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"grantee\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"dataId\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"lockedUntil\",\"type\":\"uint256\"}],\"internalType\":\"structAccessGrants.Grant[]\",\"name\":\"\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"grantee\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"dataId\",\"type\":\"string\"}],\"name\":\"grantsFor\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"grantee\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"dataId\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"lockedUntil\",\"type\":\"uint256\"}],\"internalType\":\"structAccessGrants.Grant[]\",\"name\":\"\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"grantee\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"dataId\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"lockedUntil\",\"type\":\"uint256\"}],\"name\":\"insertGrant\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
 }
 
 // RegistryABI is the input ABI used to generate the binding from.
@@ -188,130 +188,106 @@ func (_Registry *RegistryTransactorRaw) Transact(opts *bind.TransactOpts, method
 	return _Registry.Contract.contract.Transact(opts, method, params...)
 }
 
-// Grants is a free data retrieval call binding the contract method 0x8b956d28.
+// FindGrants is a free data retrieval call binding the contract method 0x7e0cc3a2.
 //
-// Solidity: function grants(address , string , uint256 ) view returns(address owner, address grantee, string dataId, uint256 lockedUntil)
-func (_Registry *RegistryCaller) Grants(opts *bind.CallOpts, arg0 common.Address, arg1 string, arg2 *big.Int) (struct {
-	Owner       common.Address
-	Grantee     common.Address
-	DataId      string
-	LockedUntil *big.Int
-}, error) {
+// Solidity: function findGrants(address owner, address grantee, string dataId) view returns((address,address,string,uint256)[])
+func (_Registry *RegistryCaller) FindGrants(opts *bind.CallOpts, owner common.Address, grantee common.Address, dataId string) ([]AccessGrantsGrant, error) {
 	var out []interface{}
-	err := _Registry.contract.Call(opts, &out, "grants", arg0, arg1, arg2)
-
-	outstruct := new(struct {
-		Owner       common.Address
-		Grantee     common.Address
-		DataId      string
-		LockedUntil *big.Int
-	})
-	if err != nil {
-		return *outstruct, err
-	}
-
-	outstruct.Owner = *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
-	outstruct.Grantee = *abi.ConvertType(out[1], new(common.Address)).(*common.Address)
-	outstruct.DataId = *abi.ConvertType(out[2], new(string)).(*string)
-	outstruct.LockedUntil = *abi.ConvertType(out[3], new(*big.Int)).(**big.Int)
-
-	return *outstruct, err
-
-}
-
-// Grants is a free data retrieval call binding the contract method 0x8b956d28.
-//
-// Solidity: function grants(address , string , uint256 ) view returns(address owner, address grantee, string dataId, uint256 lockedUntil)
-func (_Registry *RegistrySession) Grants(arg0 common.Address, arg1 string, arg2 *big.Int) (struct {
-	Owner       common.Address
-	Grantee     common.Address
-	DataId      string
-	LockedUntil *big.Int
-}, error) {
-	return _Registry.Contract.Grants(&_Registry.CallOpts, arg0, arg1, arg2)
-}
-
-// Grants is a free data retrieval call binding the contract method 0x8b956d28.
-//
-// Solidity: function grants(address , string , uint256 ) view returns(address owner, address grantee, string dataId, uint256 lockedUntil)
-func (_Registry *RegistryCallerSession) Grants(arg0 common.Address, arg1 string, arg2 *big.Int) (struct {
-	Owner       common.Address
-	Grantee     common.Address
-	DataId      string
-	LockedUntil *big.Int
-}, error) {
-	return _Registry.Contract.Grants(&_Registry.CallOpts, arg0, arg1, arg2)
-}
-
-// GrantsFor is a free data retrieval call binding the contract method 0xb59cd130.
-//
-// Solidity: function grants_for(address _grantee, string _dataId) view returns((address,address,string,uint256)[])
-func (_Registry *RegistryCaller) GrantsFor(opts *bind.CallOpts, _grantee common.Address, _dataId string) ([]FractalRegistryGrant, error) {
-	var out []interface{}
-	err := _Registry.contract.Call(opts, &out, "grants_for", _grantee, _dataId)
+	err := _Registry.contract.Call(opts, &out, "findGrants", owner, grantee, dataId)
 
 	if err != nil {
-		return *new([]FractalRegistryGrant), err
+		return *new([]AccessGrantsGrant), err
 	}
 
-	out0 := *abi.ConvertType(out[0], new([]FractalRegistryGrant)).(*[]FractalRegistryGrant)
+	out0 := *abi.ConvertType(out[0], new([]AccessGrantsGrant)).(*[]AccessGrantsGrant)
 
 	return out0, err
 
 }
 
-// GrantsFor is a free data retrieval call binding the contract method 0xb59cd130.
+// FindGrants is a free data retrieval call binding the contract method 0x7e0cc3a2.
 //
-// Solidity: function grants_for(address _grantee, string _dataId) view returns((address,address,string,uint256)[])
-func (_Registry *RegistrySession) GrantsFor(_grantee common.Address, _dataId string) ([]FractalRegistryGrant, error) {
-	return _Registry.Contract.GrantsFor(&_Registry.CallOpts, _grantee, _dataId)
+// Solidity: function findGrants(address owner, address grantee, string dataId) view returns((address,address,string,uint256)[])
+func (_Registry *RegistrySession) FindGrants(owner common.Address, grantee common.Address, dataId string) ([]AccessGrantsGrant, error) {
+	return _Registry.Contract.FindGrants(&_Registry.CallOpts, owner, grantee, dataId)
 }
 
-// GrantsFor is a free data retrieval call binding the contract method 0xb59cd130.
+// FindGrants is a free data retrieval call binding the contract method 0x7e0cc3a2.
 //
-// Solidity: function grants_for(address _grantee, string _dataId) view returns((address,address,string,uint256)[])
-func (_Registry *RegistryCallerSession) GrantsFor(_grantee common.Address, _dataId string) ([]FractalRegistryGrant, error) {
-	return _Registry.Contract.GrantsFor(&_Registry.CallOpts, _grantee, _dataId)
+// Solidity: function findGrants(address owner, address grantee, string dataId) view returns((address,address,string,uint256)[])
+func (_Registry *RegistryCallerSession) FindGrants(owner common.Address, grantee common.Address, dataId string) ([]AccessGrantsGrant, error) {
+	return _Registry.Contract.FindGrants(&_Registry.CallOpts, owner, grantee, dataId)
 }
 
-// DeleteGrant is a paid mutator transaction binding the contract method 0xb0c2418d.
+// GrantsFor is a free data retrieval call binding the contract method 0xb7dd8865.
 //
-// Solidity: function delete_grant(address _grantee, string _dataId) returns()
-func (_Registry *RegistryTransactor) DeleteGrant(opts *bind.TransactOpts, _grantee common.Address, _dataId string) (*types.Transaction, error) {
-	return _Registry.contract.Transact(opts, "delete_grant", _grantee, _dataId)
+// Solidity: function grantsFor(address grantee, string dataId) view returns((address,address,string,uint256)[])
+func (_Registry *RegistryCaller) GrantsFor(opts *bind.CallOpts, grantee common.Address, dataId string) ([]AccessGrantsGrant, error) {
+	var out []interface{}
+	err := _Registry.contract.Call(opts, &out, "grantsFor", grantee, dataId)
+
+	if err != nil {
+		return *new([]AccessGrantsGrant), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([]AccessGrantsGrant)).(*[]AccessGrantsGrant)
+
+	return out0, err
+
 }
 
-// DeleteGrant is a paid mutator transaction binding the contract method 0xb0c2418d.
+// GrantsFor is a free data retrieval call binding the contract method 0xb7dd8865.
 //
-// Solidity: function delete_grant(address _grantee, string _dataId) returns()
-func (_Registry *RegistrySession) DeleteGrant(_grantee common.Address, _dataId string) (*types.Transaction, error) {
-	return _Registry.Contract.DeleteGrant(&_Registry.TransactOpts, _grantee, _dataId)
+// Solidity: function grantsFor(address grantee, string dataId) view returns((address,address,string,uint256)[])
+func (_Registry *RegistrySession) GrantsFor(grantee common.Address, dataId string) ([]AccessGrantsGrant, error) {
+	return _Registry.Contract.GrantsFor(&_Registry.CallOpts, grantee, dataId)
 }
 
-// DeleteGrant is a paid mutator transaction binding the contract method 0xb0c2418d.
+// GrantsFor is a free data retrieval call binding the contract method 0xb7dd8865.
 //
-// Solidity: function delete_grant(address _grantee, string _dataId) returns()
-func (_Registry *RegistryTransactorSession) DeleteGrant(_grantee common.Address, _dataId string) (*types.Transaction, error) {
-	return _Registry.Contract.DeleteGrant(&_Registry.TransactOpts, _grantee, _dataId)
+// Solidity: function grantsFor(address grantee, string dataId) view returns((address,address,string,uint256)[])
+func (_Registry *RegistryCallerSession) GrantsFor(grantee common.Address, dataId string) ([]AccessGrantsGrant, error) {
+	return _Registry.Contract.GrantsFor(&_Registry.CallOpts, grantee, dataId)
 }
 
-// InsertGrant is a paid mutator transaction binding the contract method 0xbd8f9b17.
+// DeleteGrant is a paid mutator transaction binding the contract method 0xc28c6524.
 //
-// Solidity: function insert_grant(address _grantee, string _dataId) returns()
-func (_Registry *RegistryTransactor) InsertGrant(opts *bind.TransactOpts, _grantee common.Address, _dataId string) (*types.Transaction, error) {
-	return _Registry.contract.Transact(opts, "insert_grant", _grantee, _dataId)
+// Solidity: function deleteGrant(address grantee, string dataId, uint256 lockedUntil) returns()
+func (_Registry *RegistryTransactor) DeleteGrant(opts *bind.TransactOpts, grantee common.Address, dataId string, lockedUntil *big.Int) (*types.Transaction, error) {
+	return _Registry.contract.Transact(opts, "deleteGrant", grantee, dataId, lockedUntil)
 }
 
-// InsertGrant is a paid mutator transaction binding the contract method 0xbd8f9b17.
+// DeleteGrant is a paid mutator transaction binding the contract method 0xc28c6524.
 //
-// Solidity: function insert_grant(address _grantee, string _dataId) returns()
-func (_Registry *RegistrySession) InsertGrant(_grantee common.Address, _dataId string) (*types.Transaction, error) {
-	return _Registry.Contract.InsertGrant(&_Registry.TransactOpts, _grantee, _dataId)
+// Solidity: function deleteGrant(address grantee, string dataId, uint256 lockedUntil) returns()
+func (_Registry *RegistrySession) DeleteGrant(grantee common.Address, dataId string, lockedUntil *big.Int) (*types.Transaction, error) {
+	return _Registry.Contract.DeleteGrant(&_Registry.TransactOpts, grantee, dataId, lockedUntil)
 }
 
-// InsertGrant is a paid mutator transaction binding the contract method 0xbd8f9b17.
+// DeleteGrant is a paid mutator transaction binding the contract method 0xc28c6524.
 //
-// Solidity: function insert_grant(address _grantee, string _dataId) returns()
-func (_Registry *RegistryTransactorSession) InsertGrant(_grantee common.Address, _dataId string) (*types.Transaction, error) {
-	return _Registry.Contract.InsertGrant(&_Registry.TransactOpts, _grantee, _dataId)
+// Solidity: function deleteGrant(address grantee, string dataId, uint256 lockedUntil) returns()
+func (_Registry *RegistryTransactorSession) DeleteGrant(grantee common.Address, dataId string, lockedUntil *big.Int) (*types.Transaction, error) {
+	return _Registry.Contract.DeleteGrant(&_Registry.TransactOpts, grantee, dataId, lockedUntil)
+}
+
+// InsertGrant is a paid mutator transaction binding the contract method 0xb14d52d5.
+//
+// Solidity: function insertGrant(address grantee, string dataId, uint256 lockedUntil) returns()
+func (_Registry *RegistryTransactor) InsertGrant(opts *bind.TransactOpts, grantee common.Address, dataId string, lockedUntil *big.Int) (*types.Transaction, error) {
+	return _Registry.contract.Transact(opts, "insertGrant", grantee, dataId, lockedUntil)
+}
+
+// InsertGrant is a paid mutator transaction binding the contract method 0xb14d52d5.
+//
+// Solidity: function insertGrant(address grantee, string dataId, uint256 lockedUntil) returns()
+func (_Registry *RegistrySession) InsertGrant(grantee common.Address, dataId string, lockedUntil *big.Int) (*types.Transaction, error) {
+	return _Registry.Contract.InsertGrant(&_Registry.TransactOpts, grantee, dataId, lockedUntil)
+}
+
+// InsertGrant is a paid mutator transaction binding the contract method 0xb14d52d5.
+//
+// Solidity: function insertGrant(address grantee, string dataId, uint256 lockedUntil) returns()
+func (_Registry *RegistryTransactorSession) InsertGrant(grantee common.Address, dataId string, lockedUntil *big.Int) (*types.Transaction, error) {
+	return _Registry.Contract.InsertGrant(&_Registry.TransactOpts, grantee, dataId, lockedUntil)
 }
