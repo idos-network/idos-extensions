@@ -6,7 +6,7 @@ require (
 	github.com/caarlos0/env/v8 v8.0.0
 	github.com/eteu-technologies/near-api-go v0.0.2-0.20221130095932-ef78f2789388
 	github.com/ethereum/go-ethereum v1.12.0
-	github.com/kwilteam/kwil-extensions v0.0.0-20230710183301-88ce82f2d3af
+	github.com/kwilteam/kwil-extensions v0.0.0-20230727040522-1cfd930226b7
 )
 
 require (
