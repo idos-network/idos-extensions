@@ -135,7 +135,7 @@ func (e *FractalExt) GrantsFor(ctx *types.ExecutionContext, values ...*types.Sca
 	// TODO: inspect the grants themselves? e.g. locktime not passed
 
 	var exist uint8
-	if len(grants) > 0 {
+	if grants != nil && len(grants) > 0 {
 		exist = 1
 	}
 	return encodeScalarValues(exist)

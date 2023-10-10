@@ -5,7 +5,6 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"strings"
 
@@ -89,10 +88,10 @@ func base64CallArgs(thing any) (string, error) {
 
 func (nb *Backend) GrantsFor(ctx context.Context, registry, acct, resource string) ([]*chains.Grant, error) {
 	if !isNearAcct(registry) {
-		return nil, errors.New("invalid NEAR account name of registry contract")
+		return nil, nil
 	}
 	if !isNearAcct(acct) {
-		return nil, errors.New("invalid NEAR account name of grantee")
+		return nil, nil
 	}
 
 	base64Args, err := base64CallArgs(grantArgs{
