@@ -2,7 +2,6 @@ package ethereum
 
 import (
 	"context"
-	"errors"
 	"fmt"
 
 	"github.com/idos-network/idos-extensions/extension/chains"
@@ -34,11 +33,12 @@ func (b *Backend) Height(ctx context.Context) (uint64, error) {
 
 func (b *Backend) GrantsFor(ctx context.Context, contract, addr, resource string) ([]*chains.Grant, error) {
 	if !common.IsHexAddress(contract) {
-		return nil, errors.New("invalid contract address")
+		return nil, nil //errors.New("invalid contract address")
 	}
 	if !common.IsHexAddress(addr) {
-		return nil, errors.New("invalid grantee address")
+		return nil, nil //errors.New("invalid grantee address")
 	}
+
 	reg, err := registry.NewRegistryCaller(common.HexToAddress(contract), b.cl)
 	if err != nil {
 		return nil, fmt.Errorf("create registry failed: %w", err)
