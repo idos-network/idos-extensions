@@ -93,6 +93,7 @@ use idos {
 ```
 
 ## Run
+If non-existing in `docker network list`, create a network to allow other containers to connect to extension via bridge mode: `docker network create kwil-dev`
 
 ```bash
 # run with go
