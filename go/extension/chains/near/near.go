@@ -87,11 +87,8 @@ func base64CallArgs(thing any) (string, error) {
 }
 
 func (nb *Backend) GrantsFor(ctx context.Context, registry, acct, resource string) ([]*chains.Grant, error) {
-	if !isNearAcct(registry) {
-		return nil, nil
-	}
-	if !isNearAcct(acct) {
-		return nil, nil
+	if !isNearAcct(registry) || !isNearAcct(acct) {
+		return make([]*chains.Grant, 0), nil
 	}
 
 	base64Args, err := base64CallArgs(grantArgs{
