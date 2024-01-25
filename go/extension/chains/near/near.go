@@ -22,10 +22,15 @@ func isNearAcct(acct string) bool {
 		strings.HasSuffix(acct, ".shardnet") || strings.HasSuffix(acct, ".guildnet") {
 		return true
 	}
-	if len(acct) != 64 {
+
+	return isNearImplicitAddress(acct)
+}
+
+func isNearImplicitAddress(s string) bool {
+	if len(s) != 64 {
 		return false
 	}
-	_, err := hex.DecodeString(acct)
+	_, err := hex.DecodeString(s)
 	return err == nil
 }
 
