@@ -11,6 +11,7 @@ import (
 	"github.com/eteu-technologies/near-api-go/pkg/client"
 	"github.com/eteu-technologies/near-api-go/pkg/client/block"
 	"github.com/idos-network/idos-extensions/extension/chains"
+	"github.com/mr-tron/base58"
 )
 
 // isNearAcct checks if the string is a valid near account name. This is either
@@ -91,13 +92,27 @@ func base64CallArgs(thing any) (string, error) {
 	return base64.StdEncoding.EncodeToString(b), nil
 }
 
+func nearAddressToPublicKey(addr string) (string, error) {
+	data, err := hex.DecodeString(addr)
+	if err != nil {
+		return "", err
+	}
+
+	return fmt.Sprintf("ed25519:%s", base58.Encode(data)), nil
+}
+
 func (nb *Backend) GrantsFor(ctx context.Context, registry, acct, resource string) ([]*chains.Grant, error) {
-	if !isNearAcct(registry) || !isNearAcct(acct) {
+	if !isNearAcct(registry) || !isNearImplicitAddress(acct) {
 		return make([]*chains.Grant, 0), nil
 	}
 
+	granteePk, err := nearAddressToPublicKey(acct)
+	if err != nil {
+		return nil, err
+	}
+
 	base64Args, err := base64CallArgs(grantArgs{
-		Grantee: acct,
+		Grantee: granteePk,
 		DataID:  resource,
 	})
 	if err != nil {

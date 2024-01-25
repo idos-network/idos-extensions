@@ -31,6 +31,17 @@ func (sc *stubClient) ContractViewCallFunction(ctx context.Context, accountID, m
 	}, nil
 }
 
+func TestNearAddressToPublicKey(t *testing.T) {
+	pk, err := nearAddressToPublicKey("7946fb2f23ddd5e137de52d8e20abda8f8f5aa03de5c97c3178ab6bf73732ce8")
+	if err != nil {
+		t.Fatal(err)
+	}
+	target := "ed25519:9AR7EocrvHrpxEbUPiZ5pGAknzLQ6gRCX7odntbJ6MWo"
+	if pk != target {
+		t.Errorf("wanted %v got %v", target, pk)
+	}
+}
+
 func TestBackend(t *testing.T) {
 	wantHeight := uint64(123413241234)
 	cl := &stubClient{
@@ -47,7 +58,7 @@ func TestBackend(t *testing.T) {
 		t.Errorf("wanted height %v got %v", wantHeight, height)
 	}
 
-	grantee := "jchappelow.testnet"
+	grantee := "7946fb2f23ddd5e137de52d8e20abda8f8f5aa03de5c97c3178ab6bf73732ce8"
 	registry := "grants.jchappelow.testnet"
 	dataID := "blah"
 
