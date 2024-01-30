@@ -87,8 +87,8 @@ func TestBackend(t *testing.T) {
 	}
 
 	// invalid account name
-	_, err = be.GrantsFor(context.Background(), "not-a-registry", grantee, dataID)
-	if err == nil {
+	entries, _ := be.GrantsFor(context.Background(), "not-a-registry", grantee, dataID)
+	if len(entries) != 0 {
 		t.Fatalf("HasGrant accepted a bogus registry acct name")
 	}
 
