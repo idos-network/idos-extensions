@@ -31,7 +31,7 @@ jobs:
     uses: ./.github/workflows/deploy.yml
     needs:
       - target_name
-    if: ${{needs.target_name.outputs.name == 'master' || needs.target_name.outputs.name == 'deploy_to_staging'}}
+    if: ${{needs.target_name.outputs.name == 'deploy_to_staging'}}
     with:
       AWS_REGION: eu-west-1
       ENVIRONMENT: "staging"
