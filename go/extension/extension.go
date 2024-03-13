@@ -2,6 +2,7 @@ package extension
 
 import (
 	"context"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"log"
@@ -10,6 +11,8 @@ import (
 
 	"github.com/kwilteam/kwil-extensions/server"
 	"github.com/kwilteam/kwil-extensions/types"
+
+	"github.com/mr-tron/base58"
 )
 
 const (
@@ -63,6 +66,7 @@ func (e *FractalExt) BuildServer(logger *log.Logger) (*server.ExtensionServer, e
 			map[string]server.MethodFunc{
 				"get_block_height": server.WithOutputsCheck(e.BlockHeight, 1),
 				"has_grants":       server.WithInputsCheck(server.WithOutputsCheck(e.GrantsFor, 1), 2),
+				"hex_to_base58":    server.WithInputsCheck(server.WithOutputsCheck(e.HexToBase58, 1), 1),
 			}).
 		Build()
 }
@@ -139,6 +143,20 @@ func (e *FractalExt) GrantsFor(ctx *types.ExecutionContext, values ...*types.Sca
 		exist = 1
 	}
 	return encodeScalarValues(exist)
+}
+
+func (e *FractalExt) HexToBase58(ctx *types.ExecutionContext, values ...*types.ScalarValue) ([]*types.ScalarValue, error) {
+	inputHex, err := values[0].String()
+	if err != nil {
+		return nil, fmt.Errorf("convert value to string failed: %w", err)
+	}
+	fmt.Println(inputHex)
+	binaryString, _ := hex.DecodeString(inputHex)
+	base58 := base58.Encode(binaryString)
+	public_key := fmt.Sprintf("ed25519:%s", base58)
+	fmt.Println(public_key)
+
+	return encodeScalarValues(public_key)
 }
 
 // initialize checks that the meta data includes all required fields and applies
