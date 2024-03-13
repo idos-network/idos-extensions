@@ -28,6 +28,7 @@ The IDOS extension requires two configuration variables: `ETH_RPC_URL` and `NEAR
 export ETH_RPC_URL=xxx
 export NEAR_RPC_URL=xxx
 ```
+By default ETH_RPC_URL is `http://127.0.0.1:8545/`. If you want to connect th chain run in your host machine, i.e. hardhat running locally in development environment, you should use `http://host.docker.internal:8545/` instead to access host machine port from the container.
 
 
 ### Initialization
@@ -50,7 +51,7 @@ action get_credential ($id) public {
     $can_access = grants_eth.has_grants(@caller, $id);
     SELECT CASE WHEN $can_access != 1
     THEN ERROR('caller does not have access') END;
-    
+
     SELECT content
     FROM credentials
     WHERE id = $id;
@@ -69,7 +70,7 @@ interface IKwilWhitelist {
       string dataId;
       uint256 lockedUntil;
     }
-    
+
     function grants_for(address grantee, string dataId)
         public view
         returns(Grant[] memory)
