@@ -8,8 +8,7 @@ import (
 	"context"
 	"testing"
 	"time"
-
-	"github.com/kwilteam/extension-fractal-demo/extension/chains/near"
+	// "github.com/kwilteam/extension-fractal-demo/extension/chains/near"
 )
 
 func TestBackend_Online(t *testing.T) {
