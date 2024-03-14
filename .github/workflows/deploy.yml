@@ -35,17 +35,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Notify slack deployment start
-        uses: trustfractal/github-action-slack-notify-build@v1.5.1
-        id: slack
-        env:
-          SLACK_BOT_TOKEN: "${{secrets.SLACK_BOT_TOKEN}}"
-        with:
-          channel: id-deployments
-          status: STARTING
-          color: warning
-          custom_attachments: |
-            [{ "title": "Environment", "value": "${{inputs.ENVIRONMENT}}", "short": true }]
+      # - name: Notify slack deployment start
+      #   uses: trustfractal/github-action-slack-notify-build@v1.5.1
+      #   id: slack
+      #   env:
+      #     SLACK_BOT_TOKEN: "${{secrets.SLACK_BOT_TOKEN}}"
+      #   with:
+      #     channel: id-deployments
+      #     status: STARTING
+      #     color: warning
+      #     custom_attachments: |
+      #       [{ "title": "Environment", "value": "${{inputs.ENVIRONMENT}}", "short": true }]
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -93,28 +93,28 @@ jobs:
         run: |
           git push -f origin HEAD:${{inputs.ENVIRONMENT}}-${{inputs.PRODUCT}}-${{inputs.PROJECT}}-latest
 
-      - name: Notify slack success
-        if: success()
-        uses: trustfractal/github-action-slack-notify-build@v1.5.1
-        env:
-          SLACK_BOT_TOKEN: ${{secrets.SLACK_BOT_TOKEN}}
-        with:
-          message_id: ${{steps.slack.outputs.message_id}}
-          channel: id-deployments
-          status: SUCCESS
-          color: good
-          custom_attachments: |
-            [{ "title": "Environment", "value": "${{inputs.ENVIRONMENT}}", "short": true }]
+      # - name: Notify slack success
+      #   if: success()
+      #   uses: trustfractal/github-action-slack-notify-build@v1.5.1
+      #   env:
+      #     SLACK_BOT_TOKEN: ${{secrets.SLACK_BOT_TOKEN}}
+      #   with:
+      #     message_id: ${{steps.slack.outputs.message_id}}
+      #     channel: id-deployments
+      #     status: SUCCESS
+      #     color: good
+      #     custom_attachments: |
+      #       [{ "title": "Environment", "value": "${{inputs.ENVIRONMENT}}", "short": true }]
 
-      - name: Notify slack fail
-        if: failure()
-        uses: trustfractal/github-action-slack-notify-build@v1.5.1
-        env:
-          SLACK_BOT_TOKEN: ${{secrets.SLACK_BOT_TOKEN}}
-        with:
-          message_id: ${{steps.slack.outputs.message_id}}
-          channel: id-deployments
-          status: FAILED
-          color: danger
-          custom_attachments: |
-            [{ "title": "Environment", "value": "${{inputs.ENVIRONMENT}}", "short": true }]
+      # - name: Notify slack fail
+      #   if: failure()
+      #   uses: trustfractal/github-action-slack-notify-build@v1.5.1
+      #   env:
+      #     SLACK_BOT_TOKEN: ${{secrets.SLACK_BOT_TOKEN}}
+      #   with:
+      #     message_id: ${{steps.slack.outputs.message_id}}
+      #     channel: id-deployments
+      #     status: FAILED
+      #     color: danger
+      #     custom_attachments: |
+      #       [{ "title": "Environment", "value": "${{inputs.ENVIRONMENT}}", "short": true }]
