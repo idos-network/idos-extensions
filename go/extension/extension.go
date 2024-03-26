@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"regexp"
 
 	"github.com/idos-network/idos-extensions/extension/chains"
 
@@ -64,9 +65,10 @@ func (e *FractalExt) BuildServer(logger *log.Logger) (*server.ExtensionServer, e
 		}).
 		WithMethods(
 			map[string]server.MethodFunc{
-				"get_block_height": server.WithOutputsCheck(e.BlockHeight, 1),
-				"has_grants":       server.WithInputsCheck(server.WithOutputsCheck(e.GrantsFor, 1), 2),
-				"hex_to_base58":    server.WithInputsCheck(server.WithOutputsCheck(e.HexToBase58, 1), 1),
+				"get_block_height":      server.WithOutputsCheck(e.BlockHeight, 1),
+				"has_grants":            server.WithInputsCheck(server.WithOutputsCheck(e.GrantsFor, 1), 2),
+				"hex_to_base58":         server.WithInputsCheck(server.WithOutputsCheck(e.HexToBase58, 1), 1),
+				"determine_wallet_type": server.WithInputsCheck(server.WithOutputsCheck(e.DetermineWalletType, 1), 1),
 			}).
 		Build()
 }
@@ -150,13 +152,36 @@ func (e *FractalExt) HexToBase58(ctx *types.ExecutionContext, values ...*types.S
 	if err != nil {
 		return nil, fmt.Errorf("convert value to string failed: %w", err)
 	}
-	fmt.Println(inputHex)
 	binaryString, _ := hex.DecodeString(inputHex)
 	base58 := base58.Encode(binaryString)
-	public_key := fmt.Sprintf("ed25519:%s", base58)
-	fmt.Println(public_key)
+	var public_key string
+	if base58 == "" {
+		public_key = ""
+	} else {
+		public_key = fmt.Sprintf("ed25519:%s", base58)
+	}
 
 	return encodeScalarValues(public_key)
+}
+
+// This has very dumb logic: eth address returns EVM type, and NEAR returns otherwise.
+// TODO: make the logic more detailed and return error is the address is neither EVM no NEAR.
+func (e *FractalExt) DetermineWalletType(ctx *types.ExecutionContext, values ...*types.ScalarValue) ([]*types.ScalarValue, error) {
+	address, err := values[0].String()
+	if err != nil {
+		return nil, fmt.Errorf("convert value to string failed: %w", err)
+	}
+	re := regexp.MustCompile("^0x[0-9a-fA-F]{40}$")
+	var wallet_type string
+	if re.MatchString(address) {
+		wallet_type = "EVM"
+	} else {
+		wallet_type = "NEAR"
+	}
+	fmt.Println(address)
+	fmt.Println(wallet_type)
+
+	return encodeScalarValues(wallet_type)
 }
 
 // initialize checks that the meta data includes all required fields and applies
