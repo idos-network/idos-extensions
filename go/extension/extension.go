@@ -178,8 +178,6 @@ func (e *FractalExt) DetermineWalletType(ctx *types.ExecutionContext, values ...
 	} else {
 		wallet_type = "NEAR"
 	}
-	fmt.Println(address)
-	fmt.Println(wallet_type)
 
 	return encodeScalarValues(wallet_type)
 }
