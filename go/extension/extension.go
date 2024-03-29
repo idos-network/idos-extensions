@@ -67,7 +67,7 @@ func (e *FractalExt) BuildServer(logger *log.Logger) (*server.ExtensionServer, e
 			map[string]server.MethodFunc{
 				"get_block_height":      server.WithOutputsCheck(e.BlockHeight, 1),
 				"has_grants":            server.WithInputsCheck(server.WithOutputsCheck(e.GrantsFor, 1), 2),
-				"hex_to_base58":         server.WithInputsCheck(server.WithOutputsCheck(e.HexToBase58, 1), 1),
+				"implicit_address_to_public_key":         server.WithInputsCheck(server.WithOutputsCheck(e.ImplicitAddressToPublicKey, 1), 1),
 				"determine_wallet_type": server.WithInputsCheck(server.WithOutputsCheck(e.DetermineWalletType, 1), 1),
 			}).
 		Build()
