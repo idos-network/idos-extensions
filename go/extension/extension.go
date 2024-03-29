@@ -147,7 +147,7 @@ func (e *FractalExt) GrantsFor(ctx *types.ExecutionContext, values ...*types.Sca
 	return encodeScalarValues(exist)
 }
 
-func (e *FractalExt) HexToBase58(ctx *types.ExecutionContext, values ...*types.ScalarValue) ([]*types.ScalarValue, error) {
+func (e *FractalExt) ImplicitAddressToPublicKey(ctx *types.ExecutionContext, values ...*types.ScalarValue) ([]*types.ScalarValue, error) {
 	inputHex, err := values[0].String()
 	if err != nil {
 		return nil, fmt.Errorf("convert value to string failed: %w", err)
