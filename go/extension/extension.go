@@ -155,7 +155,7 @@ func (e *FractalExt) ImplicitAddressToPublicKey(ctx *types.ExecutionContext, val
 	binaryString, _ := hex.DecodeString(inputHex)
 	base58 := base58.Encode(binaryString)
 	var public_key string
-	if base58 == "" {
+	if len(base58) != 64 || base58 == "" {
 		public_key = ""
 	} else {
 		public_key = fmt.Sprintf("ed25519:%s", base58)
