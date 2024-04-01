@@ -152,7 +152,10 @@ func (e *FractalExt) ImplicitAddressToPublicKey(ctx *types.ExecutionContext, val
 	if err != nil {
 		return nil, fmt.Errorf("convert value to string failed: %w", err)
 	}
-	binaryString, _ := hex.DecodeString(inputHex)
+	binaryString, err := hex.DecodeString(inputHex)
+	if err != nil {
+		return nil, fmt.Errorf("can't hex-decode string: %w", err)
+	}
 	base58 := base58.Encode(binaryString)
 	var public_key string
 	if len(base58) != 64 || base58 == "" {
