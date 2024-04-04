@@ -2,18 +2,19 @@ package extension
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
 	"github.com/idos-network/idos-extensions/extension/chains"
 
 	// Register the chains with ChainBackend implementations.
-	_ "github.com/idos-network/idos-extensions/extension/chains/ethereum"
-	_ "github.com/idos-network/idos-extensions/extension/chains/near"
+	"github.com/idos-network/idos-extensions/extension/chains/ethereum"
+	"github.com/idos-network/idos-extensions/extension/chains/near"
 )
 
 func startChainBackend(chain, url string) (chains.ChainBackend, error) {
-	be, err := chains.NewChainBackend(chain, url) // alt. see local newChainBackend below
+	be, err := newChainBackend(chain, url)
 	if err != nil {
 		return nil, err
 	}
@@ -35,15 +36,16 @@ func startChainBackend(chain, url string) (chains.ChainBackend, error) {
 // A possibly more straight forward approach might be to define the following
 // newChainBackend locally that use the constructors directly from the
 // individual sub-packages packages. A mater of taste.
-/*
+
 func newChainBackend(chain, url string) (chains.ChainBackend, error) {
 	switch chain {
-	case ChainEthereum:
+	case "eth":
 		return ethereum.New(url)
-	case ChainNEAR:
+	case "arbitrum":
+		return ethereum.New(url)
+	case "near":
 		return near.New(url)
 	default:
 		return nil, errors.New("unsupported chain")
 	}
 }
-*/
