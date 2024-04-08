@@ -125,6 +125,8 @@ func (nb *Backend) GrantsFor(ctx context.Context, registry, acct, resource strin
 	return grants, nil
 }
 
+const NEAR_KEY_LENGTH = 32
+
 func isValidPublicKey(publicKey string) (bool, error) {
 	pieces := strings.SplitN(publicKey, ":", 2)
 	if len(pieces) != 2 {
@@ -134,8 +136,14 @@ func isValidPublicKey(publicKey string) (bool, error) {
 		return false, fmt.Errorf("unsupported NEAR public key type: %s", pieces[0])
 	}
 
-	if _, err := base58.Decode(pieces[1]); err != nil {
+	binaryPayload, err := base58.Decode(pieces[1])
+	if err != nil {
 		return false, fmt.Errorf("unable to decode %s: %w", pieces[1], err)
+	}
+
+	binaryPayloadLen := len(binaryPayload)
+	if binaryPayloadLen != NEAR_KEY_LENGTH {
+		return false, fmt.Errorf("wrong binary length: was expecting %d, got %d", NEAR_KEY_LENGTH, binaryPayloadLen)
 	}
 
 	return true, nil
