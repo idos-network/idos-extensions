@@ -168,6 +168,10 @@ func Test_isValidPublicKey(t *testing.T) {
 			false,
 		},
 		{
+			"ed25519:7dLLbzqc6kgGAC6smmJUUh9xqxH9habnLhptauA",
+			false,
+		},
+		{
 			"ed25519:7dLLbzqc6kgGAC6smmJUUh9xqxH9habnLhptauAymmUJ",
 			true,
 		},
