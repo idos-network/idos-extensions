@@ -176,7 +176,13 @@ func (e *FractalExt) IsValidPublicKey(ctx *types.ExecutionContext, values ...*ty
 		return nil, fmt.Errorf("convert value to string failed: %w", err)
 	}
 
-	return encodeScalarValues(be.IsValidPublicKey(public_key))
+	var result uint
+	if be.IsValidPublicKey(public_key) {
+		result = 1
+	} else {
+		result = 0
+	}
+	return encodeScalarValues(result)
 }
 
 // This has very dumb logic: eth address returns EVM type, and NEAR returns otherwise.
