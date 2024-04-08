@@ -145,3 +145,38 @@ func Test_isNearAcct(t *testing.T) {
 		})
 	}
 }
+
+func Test_isValidPublicKey(t *testing.T) {
+	tests := []struct {
+		publicKey string
+		want      bool
+	}{
+		{
+			"",
+			false,
+		},
+		{
+			"blah.near",
+			false,
+		},
+		{
+			"derp:herp",
+			false,
+		},
+		{
+			"ed25519:INVALID",
+			false,
+		},
+		{
+			"ed25519:7dLLbzqc6kgGAC6smmJUUh9xqxH9habnLhptauAymmUJ",
+			true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.publicKey, func(t *testing.T) {
+			if res, _ := isValidPublicKey(tt.publicKey); res != tt.want {
+				t.Errorf("isNearAcct() = %v, want %v", res, tt.want)
+			}
+		})
+	}
+}

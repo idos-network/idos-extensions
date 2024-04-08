@@ -69,6 +69,7 @@ func (e *FractalExt) BuildServer(logger *log.Logger) (*server.ExtensionServer, e
 				"has_grants":                     server.WithInputsCheck(server.WithOutputsCheck(e.GrantsFor, 1), 2),
 				"implicit_address_to_public_key": server.WithInputsCheck(server.WithOutputsCheck(e.ImplicitAddressToPublicKey, 1), 1),
 				"determine_wallet_type":          server.WithInputsCheck(server.WithOutputsCheck(e.DetermineWalletType, 1), 1),
+				"is_valid_public_key":            server.WithInputsCheck(server.WithOutputsCheck(e.IsValidPublicKey, 1), 1),
 			}).
 		Build()
 }
@@ -162,6 +163,20 @@ func (e *FractalExt) ImplicitAddressToPublicKey(ctx *types.ExecutionContext, val
 	}
 
 	return encodeScalarValues(public_key)
+}
+
+func (e *FractalExt) IsValidPublicKey(ctx *types.ExecutionContext, values ...*types.ScalarValue) ([]*types.ScalarValue, error) {
+	be, _, err := e.chainBackend(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	public_key, err := values[0].String()
+	if err != nil {
+		return nil, fmt.Errorf("convert value to string failed: %w", err)
+	}
+
+	return encodeScalarValues(be.IsValidPublicKey(public_key))
 }
 
 // This has very dumb logic: eth address returns EVM type, and NEAR returns otherwise.
