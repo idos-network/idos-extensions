@@ -176,14 +176,14 @@ func (e *FractalExt) IsValidPublicKey(ctx *types.ExecutionContext, values ...*ty
 		return nil, fmt.Errorf("convert value to string failed: %w", err)
 	}
 
-	var result uint
+	var result uint8
 	if be.IsValidPublicKey(public_key) {
 		result = 1
-	} else {
-		result = 0
 	}
 	return encodeScalarValues(result)
 }
+
+var EVM_ADDRESS_REGEX = regexp.MustCompile("^0x[0-9a-fA-F]{40}$")
 
 // This has very dumb logic: eth address returns EVM type, and NEAR returns otherwise.
 // TODO: make the logic more detailed and return error is the address is neither EVM no NEAR.
@@ -192,9 +192,9 @@ func (e *FractalExt) DetermineWalletType(ctx *types.ExecutionContext, values ...
 	if err != nil {
 		return nil, fmt.Errorf("convert value to string failed: %w", err)
 	}
-	re := regexp.MustCompile("^0x[0-9a-fA-F]{40}$")
+
 	var wallet_type string
-	if re.MatchString(address) {
+	if EVM_ADDRESS_REGEX.MatchString(address) {
 		wallet_type = "EVM"
 	} else {
 		wallet_type = "NEAR"

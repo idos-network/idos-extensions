@@ -7,8 +7,6 @@ import (
 	"time"
 
 	"github.com/idos-network/idos-extensions/extension/chains"
-
-	// Register the chains with ChainBackend implementations.
 	"github.com/idos-network/idos-extensions/extension/chains/ethereum"
 	"github.com/idos-network/idos-extensions/extension/chains/near"
 )
@@ -28,14 +26,6 @@ func startChainBackend(chain, url string) (chains.ChainBackend, error) {
 	fmt.Printf("Started chain %v at height %v\n", chain, height)
 	return be, nil
 }
-
-// NOTE: we are using a driver system whereby the individual chain
-// implementations register with the `chains` package, allowing us to
-// instantiate a chain by-name via the chains.NewChainBackend constructor.
-//
-// A possibly more straight forward approach might be to define the following
-// newChainBackend locally that use the constructors directly from the
-// individual sub-packages packages. A mater of taste.
 
 func newChainBackend(chain, url string) (chains.ChainBackend, error) {
 	switch chain {

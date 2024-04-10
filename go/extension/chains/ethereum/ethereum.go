@@ -75,17 +75,3 @@ func isValidPublicKey(publicKey string) bool {
 func (b *Backend) IsValidPublicKey(publicKey string) bool {
 	return isValidPublicKey(publicKey)
 }
-
-type driver struct{}
-
-func (d *driver) New(url string) (chains.ChainBackend, error) {
-	return New(url)
-}
-
-func (d *driver) Chain() string {
-	return "eth"
-}
-
-func init() {
-	chains.RegisterDriver(&driver{})
-}
