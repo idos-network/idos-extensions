@@ -2,14 +2,18 @@ package extension
 
 import (
 	"context"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"log"
+	"regexp"
 
 	"github.com/idos-network/idos-extensions/extension/chains"
 
 	"github.com/kwilteam/kwil-extensions/server"
 	"github.com/kwilteam/kwil-extensions/types"
+
+	"github.com/mr-tron/base58"
 )
 
 const (
@@ -61,8 +65,11 @@ func (e *FractalExt) BuildServer(logger *log.Logger) (*server.ExtensionServer, e
 		}).
 		WithMethods(
 			map[string]server.MethodFunc{
-				"get_block_height": server.WithOutputsCheck(e.BlockHeight, 1),
-				"has_grants":       server.WithInputsCheck(server.WithOutputsCheck(e.GrantsFor, 1), 2),
+				"get_block_height":               server.WithOutputsCheck(e.BlockHeight, 1),
+				"has_grants":                     server.WithInputsCheck(server.WithOutputsCheck(e.GrantsFor, 1), 2),
+				"implicit_address_to_public_key": server.WithInputsCheck(server.WithOutputsCheck(e.ImplicitAddressToPublicKey, 1), 1),
+				"determine_wallet_type":          server.WithInputsCheck(server.WithOutputsCheck(e.DetermineWalletType, 1), 1),
+				"is_valid_public_key":            server.WithInputsCheck(server.WithOutputsCheck(e.IsValidPublicKey, 1), 1),
 			}).
 		Build()
 }
@@ -139,6 +146,61 @@ func (e *FractalExt) GrantsFor(ctx *types.ExecutionContext, values ...*types.Sca
 		exist = 1
 	}
 	return encodeScalarValues(exist)
+}
+
+func (e *FractalExt) ImplicitAddressToPublicKey(ctx *types.ExecutionContext, values ...*types.ScalarValue) ([]*types.ScalarValue, error) {
+	inputHex, err := values[0].String()
+	if err != nil {
+		return nil, fmt.Errorf("convert value to string failed: %w", err)
+	}
+	binaryString, _ := hex.DecodeString(inputHex)
+	base58 := base58.Encode(binaryString)
+	var public_key string
+	if len(inputHex) != 64 || base58 == "" {
+		public_key = ""
+	} else {
+		public_key = fmt.Sprintf("ed25519:%s", base58)
+	}
+
+	return encodeScalarValues(public_key)
+}
+
+func (e *FractalExt) IsValidPublicKey(ctx *types.ExecutionContext, values ...*types.ScalarValue) ([]*types.ScalarValue, error) {
+	be, _, err := e.chainBackend(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	public_key, err := values[0].String()
+	if err != nil {
+		return nil, fmt.Errorf("convert value to string failed: %w", err)
+	}
+
+	var result uint
+	if be.IsValidPublicKey(public_key) {
+		result = 1
+	} else {
+		result = 0
+	}
+	return encodeScalarValues(result)
+}
+
+// This has very dumb logic: eth address returns EVM type, and NEAR returns otherwise.
+// TODO: make the logic more detailed and return error is the address is neither EVM no NEAR.
+func (e *FractalExt) DetermineWalletType(ctx *types.ExecutionContext, values ...*types.ScalarValue) ([]*types.ScalarValue, error) {
+	address, err := values[0].String()
+	if err != nil {
+		return nil, fmt.Errorf("convert value to string failed: %w", err)
+	}
+	re := regexp.MustCompile("^0x[0-9a-fA-F]{40}$")
+	var wallet_type string
+	if re.MatchString(address) {
+		wallet_type = "EVM"
+	} else {
+		wallet_type = "NEAR"
+	}
+
+	return encodeScalarValues(wallet_type)
 }
 
 // initialize checks that the meta data includes all required fields and applies

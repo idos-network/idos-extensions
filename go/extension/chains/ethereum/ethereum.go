@@ -3,6 +3,7 @@ package ethereum
 import (
 	"context"
 	"fmt"
+	"regexp"
 
 	"github.com/idos-network/idos-extensions/extension/chains"
 	"github.com/idos-network/idos-extensions/extension/chains/ethereum/registry"
@@ -62,6 +63,17 @@ func (b *Backend) GrantsFor(ctx context.Context, contract, addr, resource string
 	}
 
 	return grants, nil
+}
+
+var publicKeyRegex = regexp.MustCompile("^(:?0x)?[0-9a-fA-F]{130}$")
+
+// Extracted this to be able to test without having to create an RPC connection.
+func isValidPublicKey(publicKey string) bool {
+	return publicKeyRegex.MatchString(publicKey)
+}
+
+func (b *Backend) IsValidPublicKey(publicKey string) bool {
+	return isValidPublicKey(publicKey)
 }
 
 type driver struct{}

@@ -11,6 +11,7 @@ import (
 	"github.com/eteu-technologies/near-api-go/pkg/client"
 	"github.com/eteu-technologies/near-api-go/pkg/client/block"
 	"github.com/idos-network/idos-extensions/extension/chains"
+	"github.com/mr-tron/base58"
 )
 
 // isNearAcct checks if the string is a valid near account name. This is either
@@ -122,6 +123,35 @@ func (nb *Backend) GrantsFor(ctx context.Context, registry, acct, resource strin
 	}
 
 	return grants, nil
+}
+
+const NEAR_KEY_LENGTH = 32
+
+func isValidPublicKey(publicKey string) (bool, error) {
+	pieces := strings.SplitN(publicKey, ":", 2)
+	if len(pieces) != 2 {
+		return false, fmt.Errorf("unrecognized format for NEAR public key: %s", publicKey)
+	}
+	if pieces[0] != "ed25519" {
+		return false, fmt.Errorf("unsupported NEAR public key type: %s", pieces[0])
+	}
+
+	binaryPayload, err := base58.Decode(pieces[1])
+	if err != nil {
+		return false, fmt.Errorf("unable to decode %s: %w", pieces[1], err)
+	}
+
+	binaryPayloadLen := len(binaryPayload)
+	if binaryPayloadLen != NEAR_KEY_LENGTH {
+		return false, fmt.Errorf("wrong binary length: was expecting %d, got %d", NEAR_KEY_LENGTH, binaryPayloadLen)
+	}
+
+	return true, nil
+}
+
+func (b *Backend) IsValidPublicKey(publicKey string) bool {
+	result, _ := isValidPublicKey(publicKey)
+	return result
 }
 
 type driver struct{}

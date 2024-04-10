@@ -25,6 +25,7 @@ type GrantChecker interface {
 type ChainBackend interface {
 	GrantChecker
 	Height(context.Context) (uint64, error)
+	IsValidPublicKey(public_key string) bool
 	// TODO: Close(), for ws connections
 }
 
