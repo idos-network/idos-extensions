@@ -67,6 +67,7 @@ func (e *FractalExt) BuildServer(logger *log.Logger) (*server.ExtensionServer, e
 			map[string]server.MethodFunc{
 				"get_block_height":               server.WithOutputsCheck(e.BlockHeight, 1),
 				"has_grants":                     server.WithInputsCheck(server.WithOutputsCheck(e.GrantsFor, 1), 2),
+				"has_locked_grants":              server.WithInputsCheck(server.WithOutputsCheck(e.LockedGrantsFor, 1), 2),
 				"implicit_address_to_public_key": server.WithInputsCheck(server.WithOutputsCheck(e.ImplicitAddressToPublicKey, 1), 1),
 				"determine_wallet_type":          server.WithInputsCheck(server.WithOutputsCheck(e.DetermineWalletType, 1), 1),
 				"is_valid_public_key":            server.WithInputsCheck(server.WithOutputsCheck(e.IsValidPublicKey, 1), 1),
@@ -139,13 +140,39 @@ func (e *FractalExt) GrantsFor(ctx *types.ExecutionContext, values ...*types.Sca
 		return nil, fmt.Errorf("failed to check grants: %w", err)
 	}
 
-	// TODO: inspect the grants themselves? e.g. locktime not passed
-
 	var exist uint8
 	if grants != nil && len(grants) > 0 {
 		exist = 1
 	}
 	return encodeScalarValues(exist)
+}
+
+// @return1 1 for true, 0 for false
+func (e *FractalExt) LockedGrantsFor(ctx *types.ExecutionContext, values ...*types.ScalarValue) ([]*types.ScalarValue, error) {
+	be, regAddr, err := e.chainBackend(ctx)
+	if err != nil {
+		return nil, err
+	}
+	granteeAddress, err := values[0].String()
+	if err != nil {
+		return nil, fmt.Errorf("convert value to string failed: %w", err)
+	}
+
+	dataId, err := values[1].String()
+	if err != nil {
+		return nil, fmt.Errorf("convert value to string failed: %w", err)
+	}
+
+	lockedGrants, err := chains.LockedGrantsFor(be, ctx.Ctx, regAddr, granteeAddress, dataId)
+	if err != nil {
+		return nil, fmt.Errorf("failed to check for locked grants: %w", err)
+	}
+
+	var result uint8
+	if len(lockedGrants) > 0 {
+		result = 1
+	}
+	return encodeScalarValues(result)
 }
 
 func (e *FractalExt) ImplicitAddressToPublicKey(ctx *types.ExecutionContext, values ...*types.ScalarValue) ([]*types.ScalarValue, error) {
