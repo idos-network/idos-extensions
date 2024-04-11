@@ -5,10 +5,6 @@ services:
       context: ./go
     ports:
       - 50055:50055
-    environment:
-      - ETH_RPC_URL=http://host.docker.internal:8545/
-      - NEAR_RPC_URL=
-      - PORT=50055
     restart: on-failure
 
 networks:
