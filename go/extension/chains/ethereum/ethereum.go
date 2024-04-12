@@ -65,6 +65,39 @@ func (b *Backend) GrantsFor(ctx context.Context, contract, addr, resource string
 	return grants, nil
 }
 
+func (b *Backend) FindGrants(ctx context.Context, contract, owner, grantee, resource string) ([]*chains.Grant, error) {
+	if !common.IsHexAddress(contract) {
+		return nil, nil
+	}
+	if !common.IsHexAddress(owner) {
+		return nil, nil
+	}
+	if !common.IsHexAddress(grantee) {
+		return nil, nil
+	}
+
+	reg, err := registry.NewRegistryCaller(common.HexToAddress(contract), b.cl)
+	if err != nil {
+		return nil, fmt.Errorf("create registry failed: %w", err)
+	}
+	grantList, err := reg.FindGrants(&bind.CallOpts{Context: ctx}, common.HexToAddress(owner), common.HexToAddress(grantee), resource)
+	if err != nil {
+		return nil, fmt.Errorf("finding grants failed: %w", err)
+	}
+	grants := make([]*chains.Grant, len(grantList))
+	for i := range grantList {
+		gIn := &grantList[i]
+		grants[i] = &chains.Grant{
+			Owner:       gIn.Owner.Hex(),
+			LockedUntil: gIn.LockedUntil.Uint64(),
+			Grantee:     gIn.Grantee.Hex(),
+			DataID:      gIn.DataId,
+		}
+	}
+
+	return grants, nil
+}
+
 var publicKeyRegex = regexp.MustCompile("^(:?0x)?[0-9a-fA-F]{130}$")
 
 // Extracted this to be able to test without having to create an RPC connection.

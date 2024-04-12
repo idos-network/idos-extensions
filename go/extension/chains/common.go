@@ -5,10 +5,11 @@ import (
 	"time"
 )
 
-func LockedGrantsFor(gc GrantChecker, ctx context.Context, registry, addr, resource string) ([]*Grant, error) {
+func LockedGrantsFor(gc GrantChecker, ctx context.Context, registry, owner, resource string) ([]*Grant, error) {
 	now := uint64(time.Now().Unix())
+	anyAddress := "0x0000000000000000000000000000000000000000"
 
-	allGrants, err := gc.GrantsFor(ctx, registry, addr, resource)
+	allGrants, err := gc.FindGrants(ctx, registry, owner, anyAddress, resource)
 	if err != nil {
 		return nil, err
 	}
