@@ -60,23 +60,22 @@ func (nb *Backend) Height(ctx context.Context) (uint64, error) {
 	return res.Header.Height, nil
 }
 
-// The following args structure may need to be updated when the NEAR registry
-// contract is implemented.  For now we are assuming:
-//  1. method name is `grants_for`
-//  2. arg1 is `grantee` of type `AccountId` (see near_sdk), represented as
-//     a string in the marshalled request.
-//  3. arg2 is `dataId`, a string
-//  4. the return is a list of grant objects
-type grantArgs struct {
+type grantsForArgs struct {
+	Grantee string `json:"grantee"`
+	DataID  string `json:"data_id"`
+}
+
+type findGrantsArgs struct {
+	Owner   string `json:"owner"`
 	Grantee string `json:"grantee"`
 	DataID  string `json:"data_id"`
 }
 
 type grantResp struct {
 	Owner       string `json:"owner"`
+	Grantee     string `json:"grantee"`
+	DataID      string `json:"data_id"`
 	LockedUntil uint64 `json:"locked_until"` // uint256
-
-	grantArgs // no idea why
 }
 
 func base64CallArgs(thing any) (string, error) {
@@ -92,7 +91,7 @@ func (nb *Backend) GrantsFor(ctx context.Context, registry, acct, resource strin
 		return make([]*chains.Grant, 0), nil
 	}
 
-	base64Args, err := base64CallArgs(grantArgs{
+	base64Args, err := base64CallArgs(grantsForArgs{
 		Grantee: acct,
 		DataID:  resource,
 	})
@@ -126,7 +125,42 @@ func (nb *Backend) GrantsFor(ctx context.Context, registry, acct, resource strin
 }
 
 func (b *Backend) FindGrants(ctx context.Context, contract, owner, grantee, resource string) ([]*chains.Grant, error) {
-	return nil, nil
+	if !isNearAcct(contract) || !isNearAcct(owner) || !isNearAcct(grantee) {
+		return make([]*chains.Grant, 0), nil
+	}
+
+	base64Args, err := base64CallArgs(findGrantsArgs{
+		Owner:   owner,
+		Grantee: owner,
+		DataID:  resource,
+	})
+	if err != nil {
+		return nil, err
+	}
+	res, err := b.cl.ContractViewCallFunction(ctx, contract, `find_grants`, base64Args,
+		block.FinalityFinal())
+	if err != nil {
+		return nil, err
+	}
+
+	var grantList []grantResp
+	if err = json.Unmarshal(res.Result, &grantList); err != nil {
+		return nil, fmt.Errorf("unmarshal failed (%w) - res: %v",
+			err, string(res.Result))
+	}
+
+	grants := make([]*chains.Grant, len(grantList))
+	for i := range grantList {
+		gIn := &grantList[i]
+		grants[i] = &chains.Grant{
+			Owner:       gIn.Owner,
+			LockedUntil: gIn.LockedUntil,
+			Grantee:     gIn.Grantee,
+			DataID:      gIn.DataID,
+		}
+	}
+
+	return grants, nil
 }
 
 const NEAR_KEY_LENGTH = 32
