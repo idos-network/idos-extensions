@@ -15,6 +15,7 @@ type Grant struct {
 // GrantChecker specifies the method required of a type to retrieve grants.
 type GrantChecker interface {
 	GrantsFor(ctx context.Context, registry, addr, resource string) ([]*Grant, error)
+	FindGrants(ctx context.Context, registry, owner, grantee, dataId string) ([]*Grant, error)
 	// NOTE: HasGrant just returns a boolean at present, but presumably we'll
 	// want to return the entire slice of grants, which includes lock times.
 }

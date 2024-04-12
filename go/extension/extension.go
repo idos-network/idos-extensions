@@ -153,7 +153,7 @@ func (e *FractalExt) LockedGrantsFor(ctx *types.ExecutionContext, values ...*typ
 	if err != nil {
 		return nil, err
 	}
-	granteeAddress, err := values[0].String()
+	ownerAddress, err := values[0].String()
 	if err != nil {
 		return nil, fmt.Errorf("convert value to string failed: %w", err)
 	}
@@ -163,7 +163,7 @@ func (e *FractalExt) LockedGrantsFor(ctx *types.ExecutionContext, values ...*typ
 		return nil, fmt.Errorf("convert value to string failed: %w", err)
 	}
 
-	lockedGrants, err := chains.LockedGrantsFor(be, ctx.Ctx, regAddr, granteeAddress, dataId)
+	lockedGrants, err := chains.LockedGrantsFor(be, ctx.Ctx, regAddr, ownerAddress, dataId)
 	if err != nil {
 		return nil, fmt.Errorf("failed to check for locked grants: %w", err)
 	}

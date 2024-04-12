@@ -125,6 +125,10 @@ func (nb *Backend) GrantsFor(ctx context.Context, registry, acct, resource strin
 	return grants, nil
 }
 
+func (b *Backend) FindGrants(ctx context.Context, contract, owner, grantee, resource string) ([]*chains.Grant, error) {
+	return nil, nil
+}
+
 const NEAR_KEY_LENGTH = 32
 
 func isValidPublicKey(publicKey string) (bool, error) {
