@@ -1,5 +1,9 @@
 # idOS Kwil extensions
 
+> ⚠️ DEPRECATED
+>
+> The extensions now all live on https://github.com/idos-network/idos-kgw
+
 This is a Kwil extension that exposes idOS smart contract functions (external view/pure) on various blockchains to Kwil.
 
 Developers can call those functions in Kuneiform.
